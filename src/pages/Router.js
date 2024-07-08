@@ -1,15 +1,15 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Login from './Login';
-import UpdateProfile from './UpdateProfile';
 import Register from './Register';
+import UpdateProfile from './UpdateProfile';
 
 const Router = () => {
     return (
         <Routes>
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
-            <Route path='/allaroundme' element={<UpdateProfile />} />
+            <Route path='/updateprofile' element={<UpdateProfile />} />
         </Routes>
     );
 }
