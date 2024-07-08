@@ -4,7 +4,7 @@ import { toast } from "../components/Toaster";
 import { useNavigate } from "react-router-dom";
 
 export default function useAuthentication() {
-    const [user, setUser] = useState();
+    const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
     const [toggleSession, setToggleSession] = useState(false);
     const navigate = useNavigate();
@@ -16,7 +16,7 @@ export default function useAuthentication() {
                 navigate('/login');
                 toast('An email verification link sent to your email.');
             })
-            .catch(err => console.log(err))
+            .catch(err => console.log(err.message))
             .finally(() => setLoading(false));
     }
 
@@ -24,8 +24,8 @@ export default function useAuthentication() {
         setLoading(true);
         req({ method: "POST", uri: '/user/login', data })
             .then(() => {
-                setToggleSession((prev) => !prev);
                 navigate('/updateprofile');
+                setToggleSession((prev) => !prev);
             })
             .catch(() => toast('Something went wrong !', 'error'))
             .finally(() => setLoading(false));
@@ -34,8 +34,11 @@ export default function useAuthentication() {
     useEffect(() => {
         setLoading(true);
         req({ method: 'GET', uri: '/user/me' })
-            .then(({ data }) => setUser(data))
-            .catch(() => navigate('/login'))
+            .then(({ data }) => setUser({
+                ...data,
+                dob: (data.dob || '').split('T')[0]
+            }))
+            .catch((e) => { console.log(e.message); })
             .finally(() => setLoading(false));
     }, [toggleSession, navigate]);
 
@@ -43,6 +46,8 @@ export default function useAuthentication() {
         register,
         login,
         user,
-        loading
+        setUser,
+        loading,
+        setToggleSession
     }
 }
